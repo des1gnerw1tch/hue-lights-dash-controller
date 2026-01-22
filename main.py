@@ -33,6 +33,7 @@ async def connect_to_bulb():
 
 
 app.layout = html.Div([
+    html.H1("YAWM yeah we made it!", style={"textAlign": "center"}),
     daq.BooleanSwitch(id='on-boolean-switch', on=True, label="Toggle power"),
     html.Div(id='boolean-switch-result', style={"textAlign": "center"}),
     html.Br(),
@@ -53,7 +54,8 @@ app.layout = html.Div([
     html.P("Temperature of light (no RGB)", style={"textAlign": "center"}),
     dcc.Slider(153, 500, 5,
                value=153,
-               id='temp-slider'
+               id='temp-slider',
+               marks=None
     ),
     html.Div(id='temp-slider-output-container'),
     html.Br(),
@@ -61,7 +63,8 @@ app.layout = html.Div([
     html.P("Brightness", style={"textAlign": "center"}),
     dcc.Slider(0, 255, 5,
                value=255,
-               id='brightness-slider'
+               id='brightness-slider',
+               marks=None
     ),
     html.Div(id='brightness-slider-output-container')
 ])
