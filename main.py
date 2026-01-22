@@ -47,7 +47,23 @@ app.layout = html.Div([
         html.Button('Submit', id='submit-color', n_clicks=0, style={"align": "center"}),
         style={"textAlign": "center"}
     ),
-    html.Div(id='color-picker-light-result', style={"textAlign": "center"})
+    html.Div(id='color-picker-light-result', style={"textAlign": "center"}),
+    html.Br(),
+    html.Br(),
+    html.P("Temperature of light (no RGB)", style={"textAlign": "center"}),
+    dcc.Slider(153, 500, 5,
+               value=153,
+               id='temp-slider'
+    ),
+    html.Div(id='temp-slider-output-container'),
+    html.Br(),
+    html.Br(),
+    html.P("Brightness", style={"textAlign": "center"}),
+    dcc.Slider(0, 255, 5,
+               value=255,
+               id='brightness-slider'
+    ),
+    html.Div(id='brightness-slider-output-container')
 ])
 
 @callback(
@@ -74,7 +90,7 @@ def update_color_picker_output(value):
     State('our-color-picker', 'value'),
     prevent_initial_call=True
 )
-async def update_output(n_clicks, value):
+async def update_color_picker_output(n_clicks, value):
     red = value["rgb"]["r"]
     green = value["rgb"]["g"]
     blue = value["rgb"]["b"]
@@ -87,6 +103,27 @@ async def update_output(n_clicks, value):
         value,
         n_clicks
     )
+
+@callback(
+    Output('temp-slider-output-container', 'children'),
+    Input('temp-slider', 'value'),
+    prevent_initial_call=True)
+async def update_temp(value):
+    device = await BleakScanner.find_device_by_address(address, timeout=5.0)
+    light = HueBLE.HueBleLight(device)
+    await light.set_colour_temp(value)
+    return 'You have selected "{}" mireds for warmth'.format(value)
+
+
+@callback(
+    Output('brightness-slider-output-container', 'children'),
+    Input('brightness-slider', 'value'),
+    prevent_initial_call=True)
+async def update_brightness(value):
+    device = await BleakScanner.find_device_by_address(address, timeout=5.0)
+    light = HueBLE.HueBleLight(device)
+    await light.set_brightness(value)
+    return 'You have selected "{}" brightness'.format(value)
 
 
 if __name__ == '__main__':
