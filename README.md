@@ -1,7 +1,7 @@
 # Hue lights web controller
 Control Phillips Hue lights from any device on your wifi with this webpage, hosted on a Linux machine. Does not require a Hue Bridge. Perfect for raspberry pi or other small SBCs.
 
-1. Make sure bluetooth is up on linux machine and BlueZ is installed
+1. Make sure package BlueZ is installed and bluetooth service is running on Linux machine
 2. Make sure uv is installed https://docs.astral.sh/uv/
 3. Run `uv sync`
 4. Find MAC address of bulb using `uv run scan.py`
@@ -15,4 +15,5 @@ trust AA:BB:CC:DD:EE:FF
 ```
 7. `uv run main.py`
 8. Open dash frontend, and now can use features (turn on and off bulb, brightness, warmth, color, etc.)
+
 
