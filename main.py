@@ -30,6 +30,10 @@ async def connect_to_bulb():
     await light.set_power(True)
     print(f"Successfully connected to lightbulb at {address}")
 
+async def get_light():
+    device = await BleakScanner.find_device_by_address(address, timeout=5.0)
+    light = HueBLE.HueBleLight(device)
+    return light
 
 
 app.layout = html.Div([
@@ -66,7 +70,9 @@ app.layout = html.Div([
                id='brightness-slider',
                marks=None
     ),
-    html.Div(id='brightness-slider-output-container')
+    html.Div(id='brightness-slider-output-container'),
+    html.Br(),
+    html.Br()
 ])
 
 @callback(
@@ -75,8 +81,7 @@ app.layout = html.Div([
     prevent_initial_call = True
 )
 async def update_lightbulb_power(onOrOff):
-    device = await BleakScanner.find_device_by_address(address, timeout=5.0)
-    light = HueBLE.HueBleLight(device)
+    light = await get_light()
     await light.set_power(onOrOff)
     return f'Is lightbulb on? {onOrOff}.'
 
@@ -99,8 +104,7 @@ async def update_color_picker_output(n_clicks, value):
     blue = value["rgb"]["b"]
     print(f"{red}, {green}, {blue}")
     x, y = rgbToXY(red, green, blue)
-    device = await BleakScanner.find_device_by_address(address, timeout=5.0)
-    light = HueBLE.HueBleLight(device)
+    light = await get_light()
     await light.set_colour_xy(x, y)
     return 'The input value was "{}" and the button has been clicked {} times'.format(
         value,
@@ -112,8 +116,7 @@ async def update_color_picker_output(n_clicks, value):
     Input('temp-slider', 'value'),
     prevent_initial_call=True)
 async def update_temp(value):
-    device = await BleakScanner.find_device_by_address(address, timeout=5.0)
-    light = HueBLE.HueBleLight(device)
+    light = await get_light()
     await light.set_colour_temp(value)
     return 'You have selected "{}" mireds for warmth'.format(value)
 
@@ -123,8 +126,7 @@ async def update_temp(value):
     Input('brightness-slider', 'value'),
     prevent_initial_call=True)
 async def update_brightness(value):
-    device = await BleakScanner.find_device_by_address(address, timeout=5.0)
-    light = HueBLE.HueBleLight(device)
+    light = await get_light()
     await light.set_brightness(value)
     return 'You have selected "{}" brightness'.format(value)
 
